@@ -8,7 +8,7 @@ template<typename T>
 class threadsafe_queue
 {
 public:
-    // pay attention to class member's order:'head' is ahead of 'tail'
+    // pay attention to class member's initialization order:'head' is ahead of 'tail'
     threadsafe_queue() : head(new node), tail(head.get()) {}
     threadsafe_queue(const threadsafe_queue &) = delete;
     threadsafe_queue &operator=(const threadsafe_queue &) = delete;

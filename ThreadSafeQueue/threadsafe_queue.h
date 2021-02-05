@@ -19,8 +19,8 @@ public:
     }
     void push(T val)
     {
-        std::shared_ptr<T>new_data = std::make_shared<T>(std::move(val));
-        std::unique_ptr<T>ptr(new node);
+        std::shared_ptr<T>new_data(std::make_shared<T>(std::move(val)));
+        std::unique_ptr<node>ptr(new node);
         node *const new_tail = ptr.get();
         std::lock_guard<std::mutex>tail_lock(tail_mutex);
         tail->data = new_data;

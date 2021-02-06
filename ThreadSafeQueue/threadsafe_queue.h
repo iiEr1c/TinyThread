@@ -12,22 +12,8 @@ public:
     threadsafe_queue() : head(new node), tail(head.get()) {}
     threadsafe_queue(const threadsafe_queue &) = delete;
     threadsafe_queue &operator=(const threadsafe_queue &) = delete;
-    std::shared_ptr<T>try_pop()
-    {
-        std::unique_ptr<node>ole_head = pop_head();
-        return ole_head ? ole_head->data : std::shared_ptr<T>();
-    }
-    void push(T val)
-    {
-        std::shared_ptr<T>new_data(std::make_shared<T>(std::move(val)));
-        std::unique_ptr<node>ptr(new node);
-        node *const new_tail = ptr.get();
-        std::lock_guard<std::mutex>tail_lock(tail_mutex);
-        tail->data = new_data;
-        // note:unique_ptr(const unique_ptr&) = delete;
-        tail->next = std::move(ptr);
-        tail = new_tail;
-    }
+    std::shared_ptr<T>try_pop();
+    void push(T val);
 private:
     struct node
     {
@@ -54,5 +40,26 @@ private:
         return old_head;
     }
 };
+
+
+template<typename T>
+std::shared_ptr<T> threadsafe_queue<T>::try_pop()
+{
+    std::unique_ptr<node>ole_head = pop_head();
+    return ole_head ? ole_head->data : std::shared_ptr<T>();
+}
+
+template<typename T>
+void threadsafe_queue<T>::push(T val)
+{
+    std::shared_ptr<T>new_data(std::make_shared<T>(std::move(val)));
+    std::unique_ptr<node>ptr(new node);
+    node *const new_tail = ptr.get();
+    std::lock_guard<std::mutex>tail_lock(tail_mutex);
+    tail->data = new_data;
+    // note:unique_ptr(const unique_ptr&) = delete;
+    tail->next = std::move(ptr);
+    tail = new_tail;
+}
 
 #endif

@@ -52,6 +52,23 @@ public:
         }
     }
 
+    template<typename Predicate>
+    std::shared_ptr<T>find_first_if(Predicate p)
+    {
+        node *current = &head;
+        std::unique_lock<std::mutex>lk(head._mutex);
+        while(node *const next = current->next.get())
+        {
+            std::unique_lock<std::mutex>next_lk(next->_mutex);
+            lk.unlock();
+            if(p(*next->data))
+                return next->data;
+            current = next;
+            lk = std::move(next_lk);
+        }
+        return std::shared_ptr<T>();
+    }
+
 private:
     struct node
     {

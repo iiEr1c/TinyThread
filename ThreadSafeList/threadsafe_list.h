@@ -1,6 +1,5 @@
 #include <memory>
 #include <mutex>
-#include <algorithm>
 
 template<typename T>
 class threadsafe_list

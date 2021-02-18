@@ -18,7 +18,7 @@ public:
     std::shared_ptr<T>wait_and_pop();
     void wait_and_pop(T &);
     void push(T val);
-    void empty();
+    bool empty();
 private:
     struct node
     {
@@ -133,7 +133,7 @@ std::shared_ptr<T> threadsafe_queue<T>::try_pop()
 
 
 template<typename T>
-void threadsafe_queue<T>::empty()
+bool threadsafe_queue<T>::empty()
 {
     std::lock_guard<std::mutex>head_lock(head_mutex);
     return (head.get() == get_tail());
